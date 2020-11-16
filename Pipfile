@@ -4,6 +4,9 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+gpiozero = "*"
+rplcd = "*"
+"rpi.gpio" = "*"
 
 [dev-packages]
 
