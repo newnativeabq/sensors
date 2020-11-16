@@ -1,0 +1,6 @@
+# gpio.py
+
+
+class GPIO():
+    def __init__(self, device):
+        self.device = device
