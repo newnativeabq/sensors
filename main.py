@@ -12,10 +12,12 @@ from export import HTTP
 
 therm = Sensor(
     device=W1Therm(),
-    reporter=HTTP(target="192.168.1.1:8888/pi", auth=None)
+    reporter=HTTP(target="192.168.1.1:8888/pi", auth=None),
+    freq=2,
 )
 
 
-therm.read()
+therm.read_one()
 therm.report()
-therm.report()
+
+therm.run()
