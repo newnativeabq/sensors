@@ -29,7 +29,16 @@ class Printer(Reporter):
     def __init__(self, **kwargs):
         super().setup(**kwargs)
 
+    def translate(self, data):
+        packet = self.template
+        packet['value'] = data['value']
+        payload = {'data': packet}
+
+        if 'files' in data:
+            payload['files'] = data['files']
+
+        return payload
+
     def send(self, data):
-        payload = self.template
-        payload['value'] = data['value']
+        payload = self.translate(data)
         print(payload)

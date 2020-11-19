@@ -16,15 +16,16 @@ class HTTP(Reporter):
 
 
     def send(self, data):
-        payload, stream = self.translate(data)
-        requests.post(self.target, data=payload)
+        payload = self.translate(data)
+        requests.post(self.target, **payload)
 
 
     def translate(self, data):
         packet = self.template
         packet['value'] = data['value']
-        if 'attachment' in data:
-            stream = data['attachhment'] # TODO: this can not be sent as is
-        else:
-            stream = None
-        return packet, stream
+        payload = {'data': packet}
+
+        if 'files' in data:
+            payload['files'] = data['files']
+
+        return payload

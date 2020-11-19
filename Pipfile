@@ -8,6 +8,8 @@ gpiozero = "*"
 rplcd = "*"
 "rpi.gpio" = "*"
 requests = "*"
+picamera = "*"
+pillow = "*"
 
 [dev-packages]
 
