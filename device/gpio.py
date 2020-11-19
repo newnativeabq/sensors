@@ -34,4 +34,4 @@ class W1Therm():
     def read(self):
         with open(self.device_file, 'r') as f:
             data = f.readlines()
-        return self._validate_data(data)
+        return {'value': self._validate_data(data)}

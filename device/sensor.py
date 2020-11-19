@@ -5,9 +5,10 @@ import threading
 import time
 
 class Sensor():
-    def __init__(self, device, reporter, freq=1, qsize=None, **kwargs):
+    def __init__(self, sid, device, reporter, freq=1, qsize=None, **kwargs):
+        self.sid = sid
         self.device = device 
-        self.reporter = reporter
+        self.reporter = reporter(sid=sid, **kwargs)
         self.cache = self._build_cache(qsize)
         self.freq = freq
         self.active = False
