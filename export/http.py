@@ -27,5 +27,8 @@ class HTTP(Reporter):
 
         if 'files' in data:
             payload['files'] = data['files']
+        else:
+            payload['files'] = {}
+
 
         return payload

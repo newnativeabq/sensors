@@ -1,7 +1,6 @@
 #camera.py
 
 from picamera import PiCamera 
-import time 
 import io 
 # from PIL import Image
 
@@ -14,20 +13,18 @@ class Camera():
 
     def setup_system(self):
         self.camera = PiCamera()
-        self.io = io.BytesIO()
-        
+
 
     def _validate_data(self, data):
         return data
 
 
     def read(self):
-        self.camera.capture(self.io, format='png')
-        self.io.seek(0)
-        return {
+        stream = io.BytesIO()
+        self.camera.capture(stream, format='png')
+        payload = {
             'value': 1,
-            'files': (
-                str(time.time()).split('.')[0] + '.png', 
-                self.io,
-                'image/png')
+            'files': {'file': stream.getvalue()}
             }
+        stream.close()
+        return payload
