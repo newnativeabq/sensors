@@ -23,7 +23,7 @@ class Camera():
         stream = io.BytesIO()
         self.camera.capture(stream, format='png')
         payload = {
-            'value': 1,
+            'value': 0,
             'files': {'file': stream.getvalue()}
             }
         stream.close()
