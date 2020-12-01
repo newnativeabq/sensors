@@ -24,7 +24,8 @@ class Camera():
         self.camera.capture(stream, format='png')
         payload = {
             'value': 0,
-            'files': {'file': stream.getvalue()}
+            'file': stream.getvalue(),
+            'filename': 'CameraImg',
             }
         stream.close()
         return payload

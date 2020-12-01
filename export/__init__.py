@@ -1,2 +1,2 @@
 from .http import HTTP
-from .reporter import Printer
+from .printer import Printer

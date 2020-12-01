@@ -1,33 +1,52 @@
 # sensorhandler.py
 
-import multiprocessing
+import multiprocessing as mp
+from registry import Registry
+from device import start_sensor, stop_sensor
 
 
 class SensorHandler():
-    def __init__(self, sensors:list, *args, **kwargs):
-        self.p = multiprocessing.Pool(len(sensors))
-        self.sensors = self._index_sensors(sensors)
-    
-
-    def _index_sensors(self, sensors):
-        sensor_index = {}
-        for s in sensors:
-            sensor_index[s.sid] = s
+    def __init__(self, sensors:Registry, *args, **kwargs):
+        self.sensors = sensors
+        self.processes = []
 
 
-    def _start_sensor(self, sensor):
-        sensor.run()
+    def __repr__(self):
+        return f"<SensorHandler> {self.sensors}"
     
 
-    def _stop_sensor(self, sensor):
-        sensor.stop()
-    
-    
-    def _run_all(self):
-        all_sensors = list(self.sensors.values())
-        self.p.map(self._start_sensor, all_sensors)
+    def _get_sensors(self):
+        return list(self.sensors.values())
+
+
+    def initialize(self, data_registry):
+        for s in self._get_sensors():
+            s.data_registry = data_registry
 
     
-    def _stop_all(self):
-        all_sensors = list(self.sensors.values())
-        self.p.map(self._stop_sensor, all_sensors())
+    def _create_processes(self):
+        for s in self._get_sensors():
+            self.processes.append(
+                mp.Process(target=start_sensor, args=(s,))
+            )
+        
+    
+    def _start_processes(self):
+        for p in self.processes:
+            p.start()
+
+
+    def _stop_processes(self):
+        # Add Listener to control signaling and process join.
+        for p in self.processes:
+            p.join()
+
+
+    def run_all(self):
+        self._create_processes()
+        self._start_processes()
+        self._stop_processes()
+
+
+    def stop_all(self):
+        self.p.map(stop_sensor, self._get_sensors())

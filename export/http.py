@@ -1,6 +1,7 @@
 # http.py
 
 import requests
+from requests_toolbelt import MultipartEncoder
 from .reporter import Reporter
 
 
@@ -16,19 +17,25 @@ class HTTP(Reporter):
 
 
     def send(self, data):
-        payload = self.translate(data)
-        requests.post(self.target, **payload)
+        m = self.translate(data)
+        print(m.content_type)
+        requests.post(self.target, data=m, 
+                        headers={'Content-Type': m.content_type})
 
 
-    def translate(self, data):
-        packet = self.template
-        packet['value'] = data['value']
-        payload = {'data': packet}
+    def translate(self, data:dict) -> MultipartEncoder:
+        def _get_value(data, key):
+            if key in data:
+                return data[key]
 
-        if 'files' in data:
-            payload['files'] = data['files']
-        else:
-            payload['files'] = {'file':None}
+        m = MultipartEncoder(
+            fields = {
+                'value': str(data['value']),
+                'file': (
+                    _get_value(data, 'filename'),
+                    _get_value(data, 'file')
+                    )
+            }
+        )
 
-
-        return payload
+        return m

@@ -1,72 +1,140 @@
 # sensor.py
 
-import queue
-import threading
 import time
+import threading
 
 class Sensor():
-    def __init__(self, sid, device, reporter, freq=1, qsize=None, **kwargs):
+    def __init__(self, sid, device, reporter, freq=1, qsize=None, data_registry=None, 
+                    threaded=False, **kwargs):
         self.sid = sid
         self.device = device(**kwargs)
         self.reporter = reporter(sid=sid, **kwargs)
-        self.cache = self._build_cache(qsize)
+    
         self.freq = freq
         self.active = False
 
+        self._set_q_size(qsize)
 
-    def _build_cache(self, qsize):
+        self.__name__ = sid
+
+        self.threaded = threaded
+        print(f'Sensor setup for {self.threaded}')
+
+
+    def _set_q_size(self, qsize):
         if qsize is None:
             self.qsize = 1
         else:
-            self.qsize = qsize 
-        return queue.Queue(self.qsize)
+            self.qsize = qsize
+
+
+    def _fetch_cache(self):
+        return self.data_registry[self.sid]
 
 
     def read_one(self):
-        self.cache.put(self.device.read())
+        cache = self._fetch_cache()
+        cache.put(self.device.read())
 
     
     def read_multiple(self):
+        cache = self._fetch_cache()
         while True:
-            self.cache.put(self.device.read())
+            cache.put(self.device.read())
             time.sleep(1/self.freq)
             if not self.active:
                 break
     
 
     def get_one(self):
-        if self.cache.empty():
+        cache = self._fetch_cache()
+        if cache.empty():
             return None 
         else:
-            return self.cache.get()
+            return cache.get()
 
 
     def report(self):
-        self.reporter.send(self.get_one())
+        cache = self._fetch_cache()
+        if not cache.empty():
+            self.reporter.send(self.get_one())
 
     
     def report_multiple(self):
+        cache = self._fetch_cache()
         while True:
-            if self.cache.full():
+            if cache.full():
                 for _ in range(self.qsize):
                     self.reporter.send(self.get_one())
-            time.sleep(self.qsize/self.freq)
+            self.sleep()
             if not self.active:
                 break
 
 
-    def run(self):
+    def sleep(self):
+        time.sleep(self.qsize/self.freq)
+
+
+    def _run_threaded(self):
+        print('Creating read/report threads and starting operations.')
         read_thread = threading.Thread(target=self.read_multiple)
         report_thread = threading.Thread(target=self.report_multiple)
         self.op_threads = [read_thread, report_thread]
-        self.start()
+        [t.start() for t in self.op_threads]
+
+
+    def _run_synchronous(self):
+        print('Beginning synchronous operations.')
+        while self.active:
+            self.read_one()
+            self.report()
+            self.sleep()
 
 
     def start(self):
         self.active = True
-        [t.start() for t in self.op_threads]
+        if self.threaded:
+            self._run_threaded()
+        else:
+            self._run_synchronous()
 
 
     def stop(self):
         self.active = False
-        [t.join() for t in self.op_threads]
+        if self.threaded:
+            [t.join() for t in self.op_threads]
+        else:
+            pass
+
+
+
+
+## Utility Class
+
+class DataQueue():
+    def __init__(self, maxsize):
+        self.maxsize = maxsize
+        self.store = []
+    
+    def get(self):
+        return self.store.pop()
+
+    def put(self, value):
+        self.store.append(value)
+
+    def empty(self):
+        return len(self.store) == 0
+    
+    def full(self):
+        return len(self.store) >= self.maxsize
+
+
+
+## Utility Functions
+
+def start_sensor(sensor):
+    sensor.start()
+
+
+def stop_sensor(sensor):
+    sensor.stop()

@@ -10,6 +10,7 @@ rplcd = "*"
 requests = "*"
 picamera = "*"
 pillow = "*"
+requests-toolbelt = "*"
 
 [dev-packages]
 

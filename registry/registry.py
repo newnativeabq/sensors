@@ -32,6 +32,9 @@ class Registry():
     def __delitem__(self, key):
         del self.store[key]
 
-    def register(self, function, **kwargs):
-        self.store[function.__name__] = function
+    def values(self):
+        return list(self.store.values())
+
+    def register(self, obj, **kwargs):
+        self.store[obj.__name__] = obj
 

@@ -12,6 +12,7 @@ therm = Sensor(
     auth=None,
     freq=2,
     template={'sid':None, 'value':None, 'files':{}},
+    threaded = True,
 )
 
 camera = Sensor(
@@ -22,15 +23,17 @@ camera = Sensor(
     auth=None,
     freq=2,
     template={'sid':None, 'value':None, 'files':None}
+    threaded = True,
 )
 
-# Example with printer
+# # Example with printer
 # therm = Sensor(
 #     sid='therm1',
 #     device=W1Therm,
 #     reporter=Printer,
-#     freq=2,
+#     freq=0.25,
 #     template={'sid':None,'value':None},
+#     threaded=False,
 # )
 
 # camera = Sensor(
@@ -38,7 +41,8 @@ camera = Sensor(
 #     device=Camera,
 #     reporter=Printer,
 #     freq=2,
-#     template={'sid':None, 'value':None, 'files':None}
+#     template={'sid':None, 'value':None, 'files':None},
+    # threaded=False
 # )
 
 # camera.read_one()
