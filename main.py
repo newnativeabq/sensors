@@ -56,8 +56,8 @@ if __name__ == '__main__':
 
     therm.read_one()
     therm.report()
-    # camera.read_one()
-    # camera.report()
+    camera.read_one()
+    camera.report()
 
     # # Initialize all sensors with their data queues
     # controller = SensorHandler(sensor_group)

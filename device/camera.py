@@ -12,8 +12,12 @@ class Camera():
 
 
     def setup_system(self):
-        self.camera = PiCamera()
+        pass
 
+    
+    def setup_camera(self, camera: PiCamera):
+        camera.meter_mode = 'matrix'
+        camera.flash_mode = 'auto'
 
     def _validate_data(self, data):
         return data
@@ -21,8 +25,10 @@ class Camera():
 
     def read(self):
         stream = io.BytesIO()
-        self.camera.capture(stream, format='png')
-        # stream.seek(0)
+        with PiCamera() as camera:
+            self.setup_camera(camera)
+            camera.capture(stream, format='png')
+
         payload = {
             'value': 0,
             'files': ('img', stream.getvalue(), 'image/png'),
