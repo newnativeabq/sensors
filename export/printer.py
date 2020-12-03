@@ -8,16 +8,7 @@ class Printer(Reporter):
 
 
     def translate(self, data:dict):
-        def _get_value(data, key):
-            if key in data:
-                return data[key]
-
-        payload = {}
-        
-        payload['value'] = _get_value(data, 'value')
-        payload['file'] = _get_value(data, 'file')
-
-        return payload
+        return super().translate(data)
 
 
     def send(self, data):

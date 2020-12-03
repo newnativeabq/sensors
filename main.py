@@ -20,11 +20,12 @@ therm = Sensor(
     sid='therm1',
     device=W1Therm,
     reporter=HTTP,
-    target="http://192.168.1.37:8080/api/data",
+    target="http://192.168.1.37:8080/api/data/",  # Endpoint will redirect if trailing '/' not included!
+    # target='https://httpbin.org/post',
     auth=None,
     freq=0.25,
     template={'sid':None, 'value':None},
-    threaded=True
+    threaded=False,
 )
 sensor_group.register(therm)
 
@@ -33,10 +34,12 @@ camera = Sensor(
     sid='camera1',
     device=Camera,
     reporter=HTTP,
-    target="http://192.168.1.37:8080/api/data",
+    target="http://192.168.1.37:8080/api/data/",
+    # target='https://httpbin.org/post',
     auth=None,
     freq=0.1,
-    template={'sid':None, 'value':None}
+    template={'sid':None, 'value':None, 'files': None},
+    threaded=False,
 )
 sensor_group.register(camera)
 
@@ -51,13 +54,10 @@ if __name__ == '__main__':
         data_registry[s.sid] = q(maxsize=1)
         s.data_registry = data_registry
 
-    # therm.read_one()
-    # therm.report()
-    camera.read_one()
-    camera.report()
-
-    # p = mp.Process(target=start_sensor, args=(sensor_group.values()[0],))
-    # p.start()
+    therm.read_one()
+    therm.report()
+    # camera.read_one()
+    # camera.report()
 
     # # Initialize all sensors with their data queues
     # controller = SensorHandler(sensor_group)

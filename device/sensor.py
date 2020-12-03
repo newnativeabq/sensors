@@ -46,6 +46,11 @@ class Sensor():
                 break
     
 
+    def _append_sid(self, payload):
+        payload['sid'] = self.sid
+        return payload
+
+
     def get_one(self):
         cache = self._fetch_cache()
         if cache.empty():
@@ -57,7 +62,8 @@ class Sensor():
     def report(self):
         cache = self._fetch_cache()
         if not cache.empty():
-            self.reporter.send(self.get_one())
+            payload = self._append_sid(self.get_one())
+            self.reporter.send(payload)
 
     
     def report_multiple(self):
@@ -65,7 +71,7 @@ class Sensor():
         while True:
             if cache.full():
                 for _ in range(self.qsize):
-                    self.reporter.send(self.get_one())
+                    self.report()
             self.sleep()
             if not self.active:
                 break

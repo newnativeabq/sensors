@@ -22,10 +22,10 @@ class Camera():
     def read(self):
         stream = io.BytesIO()
         self.camera.capture(stream, format='png')
+        # stream.seek(0)
         payload = {
             'value': 0,
-            'file': stream.getvalue(),
-            'filename': 'CameraImg',
-            }
+            'files': ('img', stream.getvalue(), 'image/png'),
+        }
         stream.close()
         return payload

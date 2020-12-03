@@ -11,36 +11,34 @@ class Reporter():
         pass
 
     def setup(self, **kwargs):
-        if 'sid' in kwargs:
-            self.sid = kwargs['sid']
-        if 'template' in kwargs:
-            self.template = kwargs['template']
-            self.template['sid'] = self.sid
+        pass
 
     def send(self, data):
         pass
 
     def translate(self, data):
-        return data
+        def _get_value(data, key):
+            if key in data:
+                return data[key]
 
-
-
-class Printer(Reporter):
-    def __init__(self, **kwargs):
-        super().setup(**kwargs)
-
-    def translate(self, data):
-        packet = self.template
-        packet['value'] = data['value']
-        payload = {'data': packet}
-
-        if 'files' in data:
-            payload['files'] = data['files']
-        else:
-            payload['files'] = {'file': None}
-
+        payload = {}
+        payload['sid'] = _get_value(data, 'sid')
+        payload['value'] = _get_value(data, 'value')
+        payload['files'] = _compose_files(
+            _get_value(data, 'files')
+        )
         return payload
 
-    def send(self, data):
-        payload = self.translate(data)
-        print(payload)
+
+def _compose_files(file_item: tuple):
+    if file_item is not None:
+        if len(file_item) == 3:
+            return [
+                ('file', file_item)
+            ]
+        else:
+            raise ValueError("File Item length not equal 3.  \
+                Use 3 tuple format (file_name, file_data, filetype)")
+    return
+
+                
