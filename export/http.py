@@ -12,7 +12,7 @@ class HTTP(Reporter):
 
     def setup(self, **kwargs):
         super().setup(**kwargs)
-        self.target = kwargs['target']
+        self.target = _validate_url(kwargs['target'])
         self.auth = kwargs['auth']
         self.headers = {
             'Accept': "*/*",
@@ -34,3 +34,11 @@ class HTTP(Reporter):
         files = payload['files']
         payload.pop('files')
         return payload, files
+
+
+
+def _validate_url(url: str) -> str:
+    if url[-1] == '/':
+        return url 
+    else:
+        return url + '/'
