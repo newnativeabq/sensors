@@ -23,7 +23,7 @@ therm = Sensor(
     target="http://192.168.1.37:8080/api/data/",  # Endpoint will redirect if trailing '/' not included!
     # target='https://httpbin.org/post',
     auth=None,
-    freq=0.25,
+    freq=1/30,
     template={'sid':None, 'value':None},
     threaded=False,
 )
@@ -37,7 +37,7 @@ camera = Sensor(
     target="http://192.168.1.37:8080/api/data/",
     # target='https://httpbin.org/post',
     auth=None,
-    freq=0.1,
+    freq=1/60,
     template={'sid':None, 'value':None, 'files': None},
     threaded=False,
 )
@@ -54,15 +54,15 @@ if __name__ == '__main__':
         data_registry[s.sid] = q(maxsize=1)
         s.data_registry = data_registry
 
-    therm.read_one()
-    therm.report()
-    camera.read_one()
-    camera.report()
+    # therm.read_one()
+    # therm.report()
+    # camera.read_one()
+    # camera.report()
 
-    # # Initialize all sensors with their data queues
-    # controller = SensorHandler(sensor_group)
-    # controller.initialize(data_registry)
+    # Initialize all sensors with their data queues
+    controller = SensorHandler(sensor_group)
+    controller.initialize(data_registry)
     
-    # # Run Sensors in their own processes
-    # controller.run_all()
+    # Run Sensors in their own processes
+    controller.run_all()
 
