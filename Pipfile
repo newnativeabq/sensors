@@ -12,6 +12,7 @@ picamera = "*"
 pillow = "*"
 requests-toolbelt = "*"
 redis = "*"
+pytest = "*"
 
 [dev-packages]
 

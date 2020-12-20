@@ -15,6 +15,10 @@ class Sensor():
 
         self._set_q_size(qsize)
 
+        self.data_registry = data_registry
+        if data_registry is None:
+            self.cache = DataQueue(1)
+
         self.__name__ = sid
 
         self.threaded = threaded
@@ -29,6 +33,8 @@ class Sensor():
 
 
     def _fetch_cache(self):
+        if self.data_registry is None:
+            return self.cache
         return self.data_registry[self.sid]
 
 
