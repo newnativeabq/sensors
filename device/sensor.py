@@ -95,6 +95,12 @@ class Sensor():
             self.read_one()
             self.report()
             self.sleep()
+            self.check_stop_signal()
+
+
+    def check_stop_signal(self):
+        # TODO
+        pass
 
 
     def start(self):

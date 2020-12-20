@@ -16,8 +16,8 @@ data_registry = Registry()
 
 ### Configure Sensors ###
 
-therm = Sensor(
-    sid='therm1',
+therm1 = Sensor(
+    sid='therm1',  ## SID should match object name for proper registration right now.
     device=W1Therm,
     reporter=HTTP,
     target="http://192.168.1.37:8080/api/data/",  # Endpoint will redirect if trailing '/' not included!
@@ -27,7 +27,7 @@ therm = Sensor(
     template={'sid':None, 'value':None},
     threaded=False,
 )
-sensor_group.register(therm)
+sensor_group.register(therm1)
 
 
 camera = Sensor(
@@ -65,4 +65,3 @@ if __name__ == '__main__':
     
     # Run Sensors in their own processes
     controller.run_all()
-

@@ -11,6 +11,7 @@ requests = "*"
 picamera = "*"
 pillow = "*"
 requests-toolbelt = "*"
+redis = "*"
 
 [dev-packages]
 

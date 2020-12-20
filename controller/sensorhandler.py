@@ -50,3 +50,11 @@ class SensorHandler():
 
     def stop_all(self):
         self.p.map(stop_sensor, self._get_sensors())
+
+
+    def start_single_sensor(self, sid):
+        start_sensor(self.sensors[sid])
+
+
+    def stop_single_sensor(self, sid):
+        stop_sensor(self.sensors[sid])  ## TODO: check sensor registry for valid lookup
