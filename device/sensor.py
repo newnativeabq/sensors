@@ -101,12 +101,13 @@ class Sensor():
             self.read_one()
             self.report()
             self.sleep()
-            self.check_stop_signal()
+            if self.check_stop_signal():
+                break
 
 
     def check_stop_signal(self):
-        # TODO
-        pass
+        ## TODO redis subscription - check topic stop
+        return False
 
 
     def start(self):
@@ -121,8 +122,7 @@ class Sensor():
         self.active = False
         if self.threaded:
             [t.join() for t in self.op_threads]
-        else:
-            pass
+        return True
 
 
 
