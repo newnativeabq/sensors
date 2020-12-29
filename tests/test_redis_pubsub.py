@@ -2,11 +2,18 @@
 
 
 import pytest
+import redis
 
 
-def test_redis_sub():
-    pass 
+@pytest.fixture
+def rcon():
+    return redis.Redis(host='localhost', port=6379, db=0)
 
 
-def test_redis_pub():
-    pass
+def test_redis_sub(rcon):
+    assert rcon.get('nonsense') is None
+
+
+def test_redis_pub(rcon):
+    rcon.set('foo', 'bar')
+    assert rcon.get('foo') == b'bar'

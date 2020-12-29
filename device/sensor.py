@@ -45,7 +45,7 @@ class Sensor():
     
     def read_multiple(self):
         cache = self._fetch_cache()
-        while True:
+        while not self.check_stop_signal():
             cache.put(self.device.read())
             time.sleep(1/self.freq)
             if not self.active:
